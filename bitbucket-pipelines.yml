@@ -12,5 +12,6 @@ pipelines:
             - docker
           script:
             - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            - docker build -t $IMAGE_NAME:latest .
+            - docker build -f backend/Dockerfile -t $IMAGE_NAME:latest backend
+
             - docker push $IMAGE_NAME:latest
