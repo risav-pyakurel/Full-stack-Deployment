@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  loki:
+    image: grafana/loki:latest
+    container_name: risav-loki
+    ports:
+      - "3100:3100"
+    networks:
+      - risav-network
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: risav-promtail
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/log:/var/log:ro
+      - ./promtail/promtail-config.yml:/etc/promtail/promtail-config.yml
+    networks:
+      - risav-network
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: risav-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - risav-network
+    depends_on:
+      - loki
+
+networks:
+  risav-network:
+    external: true

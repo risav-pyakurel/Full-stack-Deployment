@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: risav-prometheus
+    volumes:
+      volumes:
+              - /home/risav/prometheus/prometheus.yml:/prometheus.yml
+
+      command: --config.file=/prometheus.yml
+
+    ports:
+      - "9090:9090"
+    networks:
+      - risav-network
+    depends_on:
+      - backend
+      - frontend
+
+  backend:
+    image: risav-backend
+    ports:
+      - "5000:5000"
+    networks:
+      - risav-network
+
+  frontend:
+    image: risav-frontend
+    ports:
+      - "80:80"
+    networks:
+      - risav-network
+
+networks:
+  risav-network:
+    external: true
